@@ -1,0 +1,140 @@
+---
+  import { getCollection, render } from "astro:content";
+  import { SHOW_BUY_BUTTON } from "astro:env/server"
+  import Layout from "../../layouts/Layout.astro";
+  import BookScore from "../../components/BookScore.astro";
+import BuyButton from "../../components/BuyButton.astro";
+  
+  export async function getStaticPaths () {
+    const books = await getCollection("books");
+    
+    return books.map(book => ({
+      params: {
+        id: book.slug
+      },
+      props: {
+        book
+      }
+    }))
+  }
+
+  const { book } = Astro.props
+  const { slug, data } = book
+  const { title, author, img, readtime, description, buy } = data
+  const { Content } = await render(book)
+  export const prerender = true
+---
+
+<Layout title={`${title} - Dev Books`}>	
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid lg:grid-cols-[1fr_2fr] gap-12">
+        <!-- Sidebar -->
+        <div class="flex flex-col gap-2">
+            <!-- Book Cover -->
+            <div class="relative group rounded-3xl overflow-hidden shadow-xl bg-gray-100 dark:bg-gray-800">
+                <img 
+                    transition:name={`img-${slug}`}
+                    src={`/${img}`}
+                    alt={title}
+                    class="w-full h-auto object-cover aspect-[3/4]"
+                    loading="eager"
+                />
+                <!-- Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent"></div>
+            </div>
+            
+            <BookScore server:defer id={slug}>
+              <span class="text-center" slot="fallback">
+                Cargando puntuación...
+              </span>
+            </BookScore>
+
+            <!-- Quick Info -->
+            <div class="space-y-6 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm">
+                <div class="space-y-2">
+                    <p class="text-lg font-bold text-gray-900 dark:text-gray-100">Detalles Rápidos</p>
+                    <div class="flex items-center gap-3 text-gray-600 dark:text-gray-300">
+                        <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>{readtime} de contenido</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-gray-600 dark:text-gray-300">
+                        <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Actualizaciones gratuitas</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                        $49.99
+                        <span class="text-sm text-rose-600 dark:text-rose-400 ml-2">(-20%)</span>
+                    </div>
+                    {
+                      SHOW_BUY_BUTTON && <BuyButton server:defer buy={buy} />
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="space-y-10">
+            <!-- Header -->
+            <div class="flex justify-between items-center">
+                <div class="space-y-4">
+                  <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight [text-wrap:balance]">
+                      {title}
+                  </h1>
+                  <div class="flex items-center gap-4 text-xl font-medium text-indigo-600 dark:text-indigo-400">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                      </svg>
+                      <span>por {author}</span>
+                  </div>
+                </div>
+                <!-- Atras -->
+                <a href="/" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline text-4xl">
+                    ←
+                </a>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <nav class="border-b border-gray-200 dark:border-gray-700">
+              <div class="flex space-x-8">
+                <button class="pb-4 px-1 text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600">
+                    Contenido
+                </button>
+                <!-- <button class="pb-4 px-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-medium">
+                    Reseñas (24)
+                </button> -->
+              </div>
+            </nav>
+
+            <!-- Long Description -->
+            <article class="prose dark:prose-invert max-w-none prose-lg">
+                <div class="space-y-6">
+                  <!-- Más contenido largo -->
+                  <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <Content />
+                  </p>
+                </div>
+            </article>
+
+            <!-- Author Bio -->
+            <section class="p-8 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl">
+                <div class="flex items-center gap-6">
+                    <div class="w-48 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="https://unavatar.io/midudev" alt={author} class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{author}</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mt-2">Ingeniero de software con 15 años de experiencia en desarrollo de sistemas a gran escala. Autor bestseller de múltiples libros técnicos y conferencista internacional.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+</Layout>
