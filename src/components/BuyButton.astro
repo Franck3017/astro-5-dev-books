@@ -1,6 +1,6 @@
 ---
   const SPAIN = 'es'
-  const country = Astro.request.headers.get('X-Vercel-IP-Country') ?? SPAIN
+  const country = Astro.request.headers.get('X-Vercel-IP-Country') ?? 'ES'
 
   const storeCountry = country === SPAIN ? 'spain' : 'usa'
   const countryName = country === SPAIN ? 'España' : 'Estados Unidos'
@@ -9,7 +9,7 @@
   const buyLink = buy[storeCountry]
 ---
 
-<a href={buyLink} class="flex gap-1 justify-between w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-center transition-all shadow-lg hover:shadow-xl">
+<a href={buyLink} target="_blank" class="flex gap-1 justify-between w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-center transition-all shadow-lg hover:shadow-xl">
   Comprar en Amazon {countryName}
 
   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
