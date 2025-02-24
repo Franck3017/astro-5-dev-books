@@ -9,6 +9,8 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
   output: 'server',
   
+  adapter: vercel({}),
+
   vite: {
     plugins: [tailwindcss()]
   },
@@ -18,7 +20,6 @@ export default defineConfig({
       SHOW_BUY_BUTTON: envField.boolean({ default: true, context: 'server', access: 'public' }),
       SCORE_API_ENDPOINT: envField.string({ context: 'server', access: 'public' }),
     }
-  },
-  
-  adapter: vercel({})
+  }
+
 });
