@@ -21,7 +21,7 @@ export const prerender = true
 				{
 					books.map(book => {
 						const { slug, data } = book
-						const { title, author, img, readtime, description, buy } = data
+						const { title, author, img, readtime, description, price, buy } = data
 
 						return (
 						<article class="group relative h-full flex flex-col bg-white dark:bg-gray-900 rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100/80 dark:border-gray-800/30 overflow-hidden isolate">
@@ -40,7 +40,7 @@ export const prerender = true
 								<!-- Top Badges -->
 								<div class="absolute top-3 left-3 right-3 flex items-center justify-between">
 									<span class="backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-1.5">
-										<svg class="w-4 h-4 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<svg class="w-4 h-4 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 											<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
 										</svg>
 										{readtime}
@@ -60,7 +60,7 @@ export const prerender = true
 											{title}
 										</h3>
 										<p class="text-sm text-indigo-600/90 dark:text-indigo-400 font-medium flex items-center gap-1.5">
-											<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+											<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
 												<path stroke-linecap="round" stroke-linejoin="round" d="M16 7.5A2.25 2.25 0 0118.25 9H21a3 3 0 013 3v1.5a3 3 0 01-3 3h-5.379a2.25 2.25 0 01-1.897-1.052l-.712-1.106a2.25 2.25 0 00-1.897-1.052H5.25A2.25 2.25 0 013 13.5V9m14.5-6A2.25 2.25 0 0015.75 3H8.25A2.25 2.25 0 006 5.25M13.5 3H12"/>
 											</svg>
 											<span class="mt-0.5">{author}</span>
@@ -78,14 +78,14 @@ export const prerender = true
 									<!-- Features Grid -->
 									<div class="grid grid-cols-2 gap-2 text-sm">
 										<div class="flex items-center gap-2 p-2.5 bg-gray-50/50 dark:bg-gray-800 rounded-lg">
-											<svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+											<svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 												<path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
 												<path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"/>
 											</svg>
 											<span>Vídeos</span>
 										</div>
 										<div class="flex items-center gap-2 p-2.5 bg-gray-50/50 dark:bg-gray-800 rounded-lg">
-											<svg class="w-5 h-5 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+											<svg class="w-5 h-5 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 												<path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/>
 											</svg>
 											<span>Código</span>
@@ -93,11 +93,15 @@ export const prerender = true
 									</div>
 
 									<!-- Buy Button -->
-									<a href={buy.spain} class="group/button relative flex items-center justify-between gap-2 w-full px-5 py-3.5 bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 text-gray-100 dark:text-gray-900 rounded-lg transition-all duration-300 overflow-hidden">
+									<a
+										href={buy.spain}  <!-- Simplified: using buy.spain, BuyButton component would handle localization based on header -->
+										class="group/button relative flex items-center justify-between gap-2 w-full px-5 py-3.5 bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 text-gray-100 dark:text-gray-900 rounded-lg transition-all duration-300 overflow-hidden"
+										aria-label={`Comprar ${title} por $${price}`}
+									>
 										<span class="font-medium">Comprar ahora</span>
 										<span class="flex items-center gap-1.5">
-											<span class="text-sm opacity-90">$49.99</span>
-											<svg class="w-4 h-4 transform group-hover/button:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<span class="text-sm opacity-90">${price.toFixed(2)}</span>
+											<svg class="w-4 h-4 transform group-hover/button:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 												<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
 											</svg>
 										</span>
