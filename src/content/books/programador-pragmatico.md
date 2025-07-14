@@ -4,6 +4,7 @@ author: Marco de Paula
 img: programador-pragmatico.jpg
 readtime: 344
 description: Un libro clásico para mejorar en programación
+price: 49.99
 buy:
   spain: https://amzn.to/3BaK8WQ
   usa: https://www.amazon.com/-/es/Andrew-Hunt/dp/020161622X

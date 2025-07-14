@@ -1,17 +1,25 @@
 ---
-  const SPAIN = 'es'
-  const country = Astro.request.headers.get('X-Vercel-IP-Country') ?? 'ES'
+  const SPAIN_COUNTRY_CODE = 'ES'; // Using uppercase as per ISO 3166-1 alpha-2
+  // Default to USA if the header is not present or for non-Vercel environments
+  const country = Astro.request.headers.get('X-Vercel-IP-Country')?.toUpperCase() ?? 'US';
 
-  const storeCountry = country === SPAIN ? 'spain' : 'usa'
-  const countryName = country === SPAIN ? 'España' : 'Estados Unidos'
+  const isSpain = country === SPAIN_COUNTRY_CODE;
+  const storeCountryKey = isSpain ? 'spain' : 'usa';
+  const countryName = isSpain ? 'España' : 'Estados Unidos';
 
-  const { buy } = Astro.props
-  const buyLink = buy[storeCountry]
+  const { buy } = Astro.props;
+  const buyLink = buy[storeCountryKey] ?? buy['usa']; // Fallback to USA link if specific country link is missing
 ---
 
-<a href={buyLink} target="_blank" class="flex gap-1 justify-between w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-center transition-all shadow-lg hover:shadow-xl">
-  Comprar en Amazon {countryName}
-  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<a
+  href={buyLink}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="flex gap-1 justify-between w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-center transition-all shadow-lg hover:shadow-xl"
+  aria-label={`Comprar en Amazon ${countryName}`}
+>
+  <span>Comprar en Amazon {countryName}</span>
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
   </svg>
 </a>
